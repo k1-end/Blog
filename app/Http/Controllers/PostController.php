@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use \App\Models\Post;
 
 class PostController extends Controller
 {
@@ -13,7 +14,13 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::all();
+        //(count($posts));
+        if (count($posts) != 0) {
+            return view('index')->with('posts' , $posts);
+        }else{
+            return view('index')->with('posts' , $posts);
+        }
     }
 
     /**
