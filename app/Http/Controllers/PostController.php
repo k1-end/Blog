@@ -30,7 +30,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('post.create');
     }
 
     /**
@@ -41,7 +41,16 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request , [
+		'title' => 'required' , 
+		'content' => 'required'
+		]);
+		$post = new \App\Models\Post();
+		$post->title = $request->input('title');
+		$post->body = $request->input('content');
+		$post->user_id = \Auth::id();
+		$post->save();
+		return redirect('/' )->with('success' , "Post created successfully!");
     }
 
     /**
@@ -63,7 +72,8 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+	   $post = Post::find($id);
+	   return view('post.edit')->with('post' , $post);
     }
 
     /**
@@ -75,7 +85,19 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request , [
+		'title' => 'required' , 
+		'content' => 'required'
+	]);
+	$post = Post::find($id);
+	if($post->user_id != \Auth::id()){
+		return redirect('/')->withErrors(['Not allowed' => 'Requested action is not allowed.']);
+	}
+		$post->title = $request->input('title');
+		$post->body = $request->input('content');
+		$post->save();
+		return redirect('/' )->with('success' , "Post edited successfully!");
+		
     }
 
     /**
@@ -86,6 +108,12 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+	$post = Post::find($id);
+	if($post->user_id != \Auth::id()){
+		return redirect('/')->withErrors(['Not allowed' => 'Requested action is not allowed.']);
+	}
+	$post->delete();
+	return redirect('/' )->with('success' , "Post deleted successfully!");
+
     }
 }

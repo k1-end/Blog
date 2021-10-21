@@ -9,15 +9,20 @@
                         <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
                     </a>
                 </div>
-
+			@auth
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+					<x-nav-link :href="route('posts.create')" :active="request()->routeIs('posts.create')">
+                        {{ __('New Post') }}
+                    </x-nav-link>
                 </div>
+			@endauth
             </div>
-
+			
+			@auth
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">
@@ -57,9 +62,10 @@
                     </svg>
                 </button>
             </div>
-        </div>
+			@endauth
+		</div>
     </div>
-
+	@auth
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
@@ -88,5 +94,33 @@
                 </form>
             </div>
         </div>
-    </div>
-</nav>
+    </div
+	@endauth
+</nav
+@auth
+@if($errors->any())  
+		   
+	   <ul>
+		   @foreach($errors->all() as $error)
+		   <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+			  <strong class="font-bold">{{$error}}</strong>
+			</div>
+			   
+		   @endforeach
+	   </ul>
+		   
+	 
+	  @endif
+	 
+	  @if(session('success'))
+	  <div class="alert alert-danger">
+		  {{session('success')}}
+	  </div>
+	  @endif
+	 
+	  @if(session('status'))
+	  <div class="alert alert-danger">
+		  {{session('status')}}
+	  </div>
+	  @endif
+@endauth
